@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const ImageRecyclingChecker = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file || null);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="p-8 min-h-screen flex items-center justify-center">
+      <div className="max-w-md w-full bg-white rounded-xl p-6 shadow">
+        <h1 className="text-2xl font-bold">Recycling Scan</h1>
 
-export default App
+        <div className="w-full h-64 border-4 border-dashed rounded-xl flex items-center justify-center mt-4">
+          {imagePreview ? (
+            <img
+              src={imagePreview}
+              alt="Selected item for recycling check"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="text-center text-blue-500 p-4">
+              <p className="font-semibold text-sm">
+                Tap below to select an image
+              </p>
+            </div>
+          )}
+        </div>
+
+        <label
+          htmlFor="file-upload"
+          className="w-full block mt-6 bg-blue-600 text-white py-3 rounded-xl text-center cursor-pointer"
+        >
+          {selectedFile ? "Change Photo" : "Upload Item Photo"}
+        </label>
+        <input
+          id="file-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default ImageRecyclingChecker;
